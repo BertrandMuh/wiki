@@ -1,8 +1,6 @@
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponseRedirect
 from django.shortcuts import render
-
 from . import util
-
 import markdown as md
 
 
@@ -22,16 +20,18 @@ def page(request, title):
 
 
 def search(request):
-    page = request.GET.get('q')
-    # if page != "":
-    if page in util.list_entries():
-        return HttpResponseRedirect('wiki/' + page)
-    else:
-        possible_result = []
-        for entry in util.list_entries():
-            if page in entry:
-                possible_result.append(entry)
-        return HttpResponse(page)
-    # for entry in util.list_entries():
-    #     if page == entry:
-    #         return HttpResponse(util.list_entries())
+    userInput = request.GET.get('q')
+    possible_result = []
+
+    for entry in util.list_entries():
+        if userInput == '':
+            return HttpResponseRedirect('/')
+
+        elif userInput.lower() in entry.lower():
+            possible_result.append(entry)
+
+    if len(possible_result) != 0:
+        return render(request, "encyclopedia/index.html", {
+            "entries": possible_result
+        })
+    return HttpResponseRedirect('wiki/' + userInput)
