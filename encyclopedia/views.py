@@ -1,5 +1,6 @@
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
+from django import forms
 from . import util
 import markdown as md
 
@@ -35,3 +36,14 @@ def search(request):
             "entries": possible_result
         })
     return HttpResponseRedirect('wiki/' + userInput)
+
+
+class NewPageForm(forms.Form):
+    title = forms.CharField(max_length=100)
+    content = forms.CharField(widget=forms.Textarea)
+
+
+def newPage(request):
+    return render(request, 'encyclopedia/new_page.html', {
+        'form': util.NewPageForm()
+    })
