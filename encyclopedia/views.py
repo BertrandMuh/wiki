@@ -21,29 +21,32 @@ def page(request, title):
 
 
 def search(request):
-    userInput = request.GET.get('q')
+    userInput = request.GET.get('q').capitalize()
     possible_result = []
 
-    for entry in util.list_entries():
-        if userInput == '':
-            return HttpResponseRedirect('/')
+    if userInput == '':
+        return HttpResponseRedirect('/')
+    elif userInput in util.list_entries():
+        return HttpResponseRedirect('wiki/' + userInput)
 
-        elif userInput.lower() in entry.lower():
+    for entry in util.list_entries():
+        if userInput.lower() in entry.lower():
             possible_result.append(entry)
 
     if len(possible_result) != 0:
         return render(request, "encyclopedia/index.html", {
             "entries": possible_result
         })
-    return HttpResponseRedirect('wiki/' + userInput)
-
-
-class NewPageForm(forms.Form):
-    title = forms.CharField(max_length=100)
-    content = forms.CharField(widget=forms.Textarea)
 
 
 def newPage(request):
-    return render(request, 'encyclopedia/new_page.html', {
-        'form': util.NewPageForm()
-    })
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        content = request.POST.get('content')
+        util.save_entry(title, content)
+        return HttpResponseRedirect('/')
+
+    else:
+        return render(request, 'encyclopedia/new_page.html', {
+            'form': util.NewPageForm()
+        })

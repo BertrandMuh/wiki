@@ -4,7 +4,7 @@ Encyclopedia
 {% endblock %}
 
 {% block body %}
-<form action="{% 'save_entry' }" method="post">
+<form action="{% url 'new-page' %}" method="post">
     {% csrf_token %}
     {{ form.as_div}}
     <input type="submit" value="save" />
