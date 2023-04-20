@@ -4,16 +4,9 @@ Encyclopedia
 {% endblock %}
 
 {% block body %}
-<form action="{% url 'new-page' %}" method="post">
+<form action="{% url 'add-entry' %}" method="post">
     {% csrf_token %}
     {{ form.as_div}}
     <input type="submit" value="save" />
 </form>
-
-
-
-
-
-
-
 {% endblock %}

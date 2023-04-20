@@ -36,9 +36,3 @@ def get_entry(title):
         return f.read().decode("utf-8")
     except FileNotFoundError:
         return None
-
-
-class NewPageForm(forms.Form):
-    title = forms.CharField(max_length=100, required=True)
-    content = forms.CharField(widget=forms.Textarea(
-        attrs={'rows': 5}), required=True)

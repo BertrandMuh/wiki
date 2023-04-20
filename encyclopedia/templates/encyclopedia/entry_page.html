@@ -5,8 +5,8 @@ Encyclopedia
 {% endblock %}
 
 {% block body %}
-{{ entry | safe}}
-<a href="">Edit</a>
+{{ content | safe | escape}}
+<a href="{% url 'edit' title=title %}">Edit</a>
 
 
 
