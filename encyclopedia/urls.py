@@ -6,5 +6,6 @@ urlpatterns = [
     path("", views.index, name="index"),
     path("wiki/<str:title>", views.page, name="page"),
     path('search', views.search, name='search'),
-    path('new-page', views.newPage, name='new-page')
+    path('new-page', views.newPage, name='new-page'),
+    path('error',views.error, name='error')
 ]

@@ -1,4 +1,4 @@
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
 from django import forms
 from . import util
@@ -11,13 +11,22 @@ def index(request):
     })
 
 
-def page(request, title):
-    content = f"## 404 \n Sorry! the {title} page was not found." if util.get_entry(
-        title) == None else util.get_entry(title)
-    return render(request, "encyclopedia/page.html", {
-        "title": title,
-        "entry": md.markdown(content)
+def error(request, content):
+    return render(request, 'encyclopedia/error.html', {
+        'error': md.markdown(content)
     })
+
+
+def page(request, title):
+    content = f"## 404 \n Sorry! the {title} page was not found."
+    if util.get_entry(title) == None:
+        return error(request, content)
+    else:
+        content = util.get_entry(title)
+        return render(request, "encyclopedia/entry_page.html", {
+            "title": title,
+            "entry": md.markdown(content)
+        })
 
 
 def search(request):
@@ -41,12 +50,17 @@ def search(request):
 
 def newPage(request):
     if request.method == 'POST':
-        title = request.POST.get('title')
+        title = request.POST.get('title').capitalize()
         content = request.POST.get('content')
+
+        if title in util.list_entries():
+            content = f"## 409 \n Sorry! the {title} page already exists."
+            return error(request, content)
+
         util.save_entry(title, content)
         return HttpResponseRedirect('/')
 
     else:
-        return render(request, 'encyclopedia/new_page.html', {
+        return render(request, 'encyclopedia/new_entry.html', {
             'form': util.NewPageForm()
         })
