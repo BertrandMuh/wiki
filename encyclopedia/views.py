@@ -53,8 +53,8 @@ def search(request):
 
     if userInput == '':
         return HttpResponseRedirect('/')
-    if userInput in util.list_entries():
-        return HttpResponseRedirect('wiki/' + userInput)
+    if userInput.capitalize() in util.list_entries():
+        return HttpResponseRedirect('wiki/' + userInput.capitalize())
 
     for entry in util.list_entries():
         if userInput.lower() in entry.lower():
@@ -64,6 +64,8 @@ def search(request):
         return render(request, "encyclopedia/index.html", {
             "entries": possible_result
         })
+    else:
+        return index(request)
 
 
 def newEntry(request):
